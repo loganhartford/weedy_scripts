@@ -1,34 +1,48 @@
 #!/usr/bin/python3
+import os
 from RPi import GPIO
 from datetime import datetime
 import time
 from picamera2 import Picamera2
 
-GPIO.setmode(GPIO.BCM)
+# Globals
+BUTTON_PIN = 17
+RED_LED_PIN = 27
+GREEN_LED_PIN = 22
+BLINK_DURATION = 0.3
+CAPTURE_DIRECTORY = "img"
 
-# GPIO setup
-button_pin = 17
-red_pin = 27
-green_pin = 22
-GPIO.setup(button_pin, GPIO.IN)
-GPIO.setup(red_pin, GPIO.OUT)
-GPIO.setup(green_pin, GPIO.OUT)
+def setup_gpio():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(BUTTON_PIN, GPIO.IN)
+    GPIO.setup(RED_LED_PIN, GPIO.OUT)
+    GPIO.setup(GREEN_LED_PIN, GPIO.OUT)
 
-# Initialize Picamera2
-picam2 = Picamera2()
-camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)})
-picam2.configure(camera_config)
-# picam2.set_controls({   "ExposureTime": 20000, 
-#                         "AnalogueGain": 1.0, 
-#                         "AwbEnable": False,         # Disable auto white balance for consistency
-#                         "AfMode": 1})               # Autofocus mode
-picam2.set_controls({ "AfMode": 1})                     # Autofocus mode
+def cleanup_gpio():
+    GPIO.cleanup()
 
-picam2.start()
+def blink_led(pin, times=3, duration=BLINK_DURATION):
+    for _ in range(times):
+        GPIO.output(pin, GPIO.HIGH)
+        time.sleep(duration)
+        GPIO.output(pin, GPIO.LOW)
+        time.sleep(duration)
 
-def capture_image():
+def initialize_camera():
+    picam2 = Picamera2()
+    camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)})
+    picam2.configure(camera_config)
+    picam2.set_controls({"AfMode": 1})  # Autofocus mode
+    picam2.start()
+    return picam2
+
+def ensure_capture_directory():
+    if not os.path.exists(CAPTURE_DIRECTORY):
+        os.makedirs(CAPTURE_DIRECTORY)
+
+def capture_image(picam2):
     try:
-        filename = f"img/captured_image_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+        filename = os.path.join(CAPTURE_DIRECTORY, f"captured_image_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg")
         picam2.capture_file(filename)
         print(f"Image captured: {filename}")
         return 0
@@ -36,35 +50,31 @@ def capture_image():
         print(f"Error capturing image: {e}")
         return -1
 
-try:
-    for i in range(3):
-        GPIO.output(green_pin, GPIO.HIGH)
-        time.sleep(0.3)
-        GPIO.output(green_pin, GPIO.LOW)
-        time.sleep(0.3)
-    while True:
-        if (GPIO.input(button_pin) == GPIO.HIGH):
-            ret = capture_image()
-            if ret:
-                GPIO.output(red_pin, GPIO.HIGH)
-            else:
-                GPIO.output(green_pin, GPIO.HIGH)
-            time.sleep(1)
-            GPIO.output(red_pin, GPIO.LOW)
-            GPIO.output(green_pin, GPIO.LOW)
+def main():
+    setup_gpio()
+    ensure_capture_directory()
+    picam2 = initialize_camera()
 
-            # Exit the loop if the button is held for the duration of the status LED
-            if (GPIO.input(button_pin) == GPIO.HIGH):
-                for i in range(3):
-                    GPIO.output(red_pin, GPIO.HIGH)
-                    time.sleep(0.3)
-                    GPIO.output(red_pin, GPIO.LOW)
-                    time.sleep(0.3)
-                break
+    try:
+        blink_led(GREEN_LED_PIN)
+        while True:
+            if GPIO.input(BUTTON_PIN) == GPIO.HIGH:
+                result = capture_image(picam2)
+                led_pin = GREEN_LED_PIN if result == 0 else RED_LED_PIN
+                GPIO.output(led_pin, GPIO.HIGH)
+                time.sleep(1)
+                GPIO.output(led_pin, GPIO.LOW)
 
-except KeyboardInterrupt:
-    pass
+                # Check if the button is still pressed after the status indication
+                if GPIO.input(BUTTON_PIN) == GPIO.HIGH:
+                    blink_led(RED_LED_PIN)
+                    break
 
-finally:
-    picam2.stop()
-    GPIO.cleanup()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        picam2.stop()
+        cleanup_gpio()
+
+if __name__ == "__main__":
+    main()
