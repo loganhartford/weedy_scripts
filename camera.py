@@ -2,13 +2,11 @@
 from RPi import GPIO
 from datetime import datetime
 import time
-import random
-
-def random_sign():
-    return random.choice([0, -1])
+from picamera2 import Picamera2
 
 GPIO.setmode(GPIO.BCM)
 
+# GPIO setup
 button_pin = 17
 red_pin = 27
 green_pin = 22
@@ -16,14 +14,27 @@ GPIO.setup(button_pin, GPIO.IN)
 GPIO.setup(red_pin, GPIO.OUT)
 GPIO.setup(green_pin, GPIO.OUT)
 
+# Initialize Picamera2
+picam2 = Picamera2()
+camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)})
+picam2.configure(camera_config)
+# picam2.set_controls({   "ExposureTime": 20000, 
+#                         "AnalogueGain": 1.0, 
+#                         "AwbEnable": False,         # Disable auto white balance for consistency
+#                         "AfMode": 1})               # Autofocus mode
+picam2.set_controls({ "AfMode": 1})                     # Autofocus mode
+
+picam2.start()
 
 def capture_image():
-    ret = random_sign()
-    if ret:
-        print("error")
-        return ret
-    print("click")
-    return ret
+    try:
+        filename = f"img/captured_image_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+        picam2.capture_file(filename)
+        print(f"Image captured: {filename}")
+        return 0
+    except Exception as e:
+        print(f"Error capturing image: {e}")
+        return -1
 
 try:
     for i in range(3):
@@ -50,10 +61,10 @@ try:
                     GPIO.output(red_pin, GPIO.LOW)
                     time.sleep(0.3)
                 break
-                
 
 except KeyboardInterrupt:
     pass
 
 finally:
+    picam2.stop()
     GPIO.cleanup()

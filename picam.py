@@ -1,9 +1,8 @@
+#!/usr/bin/python3
 from picamera2 import Picamera2
 
 # Create a Picamera2 instance
 picam2 = Picamera2()
-
-# Configure the camera for still image capture
 camera_config = picam2.create_still_configuration()
 picam2.configure(camera_config)
 
