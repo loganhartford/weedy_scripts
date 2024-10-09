@@ -10,7 +10,7 @@ BUTTON_PIN = 17
 RED_LED_PIN = 27
 GREEN_LED_PIN = 22
 BLINK_DURATION = 0.3
-CAPTURE_DIRECTORY = "img"
+CAPTURE_DIRECTORY = "/home/weedy/weedy_scripts/img"
 
 def setup_gpio():
     GPIO.setmode(GPIO.BCM)
