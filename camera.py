@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from RPi import GPIO
 from datetime import datetime
 import time
@@ -40,6 +41,15 @@ try:
             time.sleep(1)
             GPIO.output(red_pin, GPIO.LOW)
             GPIO.output(green_pin, GPIO.LOW)
+
+            # Exit the loop if the button is held for the duration of the status LED
+            if (GPIO.input(button_pin) == GPIO.HIGH):
+                for i in range(3):
+                    GPIO.output(red_pin, GPIO.HIGH)
+                    time.sleep(0.3)
+                    GPIO.output(red_pin, GPIO.LOW)
+                    time.sleep(0.3)
+                break
                 
 
 except KeyboardInterrupt:
