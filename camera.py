@@ -40,8 +40,8 @@ def initialize_camera():
         "AeMeteringMode": 1,        # Center-weighted metering for balanced exposure
         "ExposureTime": 0,          # Set to 0 for auto exposure (let the camera decide)
         "AnalogueGain": 0,          # Let the camera control ISO dynamically
-        "AwbEnable": True,          # Auto white balance enabled
-        "AwbMode": 1,               # Auto white balance mode
+        # "AwbEnable": True,          # Auto white balance enabled
+        # "AwbMode": 1,               # Auto white balance mode
     })
 
     picam2.start()
