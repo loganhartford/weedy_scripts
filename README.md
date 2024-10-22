@@ -1,2 +1,2 @@
 # weedy_scripts
-Python Scripts for use in the WeedWarden Capston project.
+Python Scripts for use in the WeedWarden Capstone project.
