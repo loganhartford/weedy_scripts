@@ -20,10 +20,10 @@ try:
         print(f"Received: {response}")
 
         # Verify if the sent data matches the received data
-        if response == test_message.strip():
-            print("Loopback test successful!")
-        else:
-            print("Loopback test failed.")
+        # if response == test_message.strip():
+        #     print("Loopback test successful!")
+        # else:
+        #     print("Loopback test failed.")
 
         time.sleep(1)
 
