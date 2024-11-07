@@ -49,24 +49,23 @@ def parse_message(message):
     return message_type, axis, position
 
 def main():
-    # Open the serial connection
     ser = serial.Serial('/dev/ttyAMA0', baudrate=9600, timeout=0.1)
-    
+
     try:
         while True:
             # Step 1: Send Command
             axis = 1
-            position = 423  # You can change this value as needed
-            message = construct_message(0x01, axis, position)  # Message Type 0x01 for Command
+            position = 423  # Example position
+            message = construct_message(0x01, axis, position)  # Command message
             ser.write(message)
-            print(f"Sent Command: Axis {axis}, Position {position}, Message {list(message)}")
-            
+            print(f"Sent Command: Axis {axis}, Position {position}")
+
             # Step 2: Wait for Acknowledgment
             ack_received = False
             ack_timeout = 5  # seconds
             ack_start_time = time.time()
             buffer = bytearray()
-            
+
             while not ack_received and (time.time() - ack_start_time) < ack_timeout:
                 data = ser.read(ser.in_waiting or 1)
                 if data:
@@ -79,33 +78,28 @@ def main():
                             if message_type == 0x03:  # Acknowledgment
                                 print(f"Received ACK: Axis {resp_axis}, Position {resp_position}")
                                 ack_received = True
-                                break
-                            elif message_type == 0x04:  # Error
-                                print(f"Received Error: Axis {resp_axis}, Position {resp_position}")
-                                print("Resending Command...")
-                                ser.write(message)
-                                ack_start_time = time.time()  # Reset timeout
                                 buffer = buffer[5:]  # Remove processed message
                                 break
                             else:
                                 print(f"Received unexpected message type: {message_type}")
-                                buffer = buffer[5:]  # Remove processed message
+                                buffer = buffer[5:]
                         except ValueError as e:
                             print(f"Error parsing message: {e}")
                             buffer = buffer[1:]  # Remove one byte and retry
                 else:
                     time.sleep(0.1)
-            
+
             if not ack_received:
                 print("Timeout waiting for acknowledgment. Resending Command...")
-                continue  # Go back to the start of the loop to resend the command
-            
-            # Step 3: Check for Incoming Data
-            data_check_duration = 1  # seconds
-            data_check_start_time = time.time()
+                continue  # Go back to the start to resend the command
+
+            # Step 3: Wait for Data Message from Nucleo
+            data_received = False
+            data_timeout = 10  # seconds (adjust as needed)
+            data_start_time = time.time()
             buffer = bytearray()
-            
-            while (time.time() - data_check_start_time) < data_check_duration:
+
+            while not data_received and (time.time() - data_start_time) < data_timeout:
                 data = ser.read(ser.in_waiting or 1)
                 if data:
                     buffer.extend(data)
@@ -113,30 +107,28 @@ def main():
                     while len(buffer) >= 5:
                         message = buffer[:5]
                         try:
-                            message_type, axis, position = parse_message(message)
-                            print(f"Received: Message Type {message_type}, Axis {axis}, Position {position}, Message {list(message)}")
-                            
-                            if message_type == 0x02:  # Data message
-                                # Process data as needed
-                                print(f"Processing data: Axis {axis}, Position {position}")
-                                
-                                # Send acknowledgment
-                                ack_message = construct_message(0x03, axis, position)
-                                ser.write(ack_message)
-                                print(f"Sent ACK: {list(ack_message)}")
+                            message_type, resp_axis, resp_position = parse_message(message)
+                            if message_type == 0x02:  # Data message from Nucleo
+                                print(f"Received Data from Nucleo: Axis {resp_axis}, Position {resp_position}")
+                                data_received = True
+                                buffer = buffer[5:]  # Remove processed message
+                                break
                             else:
                                 print(f"Received unexpected message type: {message_type}")
-                            
-                            buffer = buffer[5:]  # Remove processed message
+                                buffer = buffer[5:]
                         except ValueError as e:
                             print(f"Error parsing message: {e}")
                             buffer = buffer[1:]  # Remove one byte and retry
                 else:
                     time.sleep(0.1)
-            
-            # Step 4: Wait before sending the next command
-            time.sleep(1)
-    
+
+            if not data_received:
+                print("Timeout waiting for data message from Nucleo.")
+                continue  # Decide how to handle this case
+
+            # Step 4: Proceed to send the next command or perform other tasks
+            time.sleep(1)  # Adjust as needed
+
     except KeyboardInterrupt:
         print("Program interrupted by user.")
     finally:
