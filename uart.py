@@ -4,26 +4,23 @@ import time
 # Open the serial connection on /dev/serial0
 ser = serial.Serial('/dev/ttyAMA0', baudrate=9600, timeout=1)
 
-# Test data to send
-test_message = "Hello, UART!\n"
+# Data to send
+axis = 1
+byte1 = 4
+byte2 = 2
+byte3 = 3
+checksum = (axis + byte1 + byte2 + byte3) % 256
+data = bytes([axis, byte1, byte2, byte3, checksum])
 
 try:
     while True:
-        # Send the test message
-        ser.write(test_message.encode())
-        print(f"Sent: {test_message.strip()}")
+        ser.write(data)
+        print(f"Sent: {list(data)}")
 
-        time.sleep(0.1)  # Small delay to allow data to be processed
+        time.sleep(0.1)
 
-        # Read the response
-        response = ser.readline().decode().strip()
-        print(f"Received: {response}")
-
-        # Verify if the sent data matches the received data
-        # if response == test_message.strip():
-        #     print("Loopback test successful!")
-        # else:
-        #     print("Loopback test failed.")
+        response = ser.read(6)
+        print(f"Received: {list(response)}")
 
         time.sleep(1)
 
