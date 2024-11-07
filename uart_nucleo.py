@@ -2,32 +2,23 @@ import serial
 import time
 
 def construct_message(message_type, axis, position):
-    # Ensure message_type is valid
     if message_type not in [0x01, 0x02, 0x03, 0x04]:
         raise ValueError("Invalid message type.")
-    
-    # Ensure axis is within valid range
+
     if axis not in [0, 1, 2]:
         raise ValueError("Axis must be 0, 1, or 2.")
+
+    if not (0 <= position <= 450):
+        raise ValueError("Position must be between 0 and 450.")
     
-    # Ensure position is within valid range (0-999)
-    if not (0 <= position <= 999):
-        raise ValueError("Position must be between 0 and 999.")
-    
-    # Split position into high and low bytes
     pos_high = (position >> 8) & 0xFF
     pos_low = position & 0xFF
-    
-    # Compute checksum
     checksum = (message_type + axis + pos_high + pos_low) % 256
-    
-    # Construct message
     message = bytes([message_type, axis, pos_high, pos_low, checksum])
     
     return message
 
 def parse_message(message):
-    # Message should be 5 bytes
     if len(message) != 5:
         raise ValueError("Message must be 5 bytes long.")
     
@@ -37,13 +28,10 @@ def parse_message(message):
     pos_low = message[3]
     checksum = message[4]
     
-    # Recompute checksum
     calculated_checksum = (message_type + axis + pos_high + pos_low) % 256
-    
     if checksum != calculated_checksum:
         raise ValueError("Checksum does not match.")
     
-    # Reconstruct position
     position = (pos_high << 8) | pos_low
     
     return message_type, axis, position
@@ -55,14 +43,14 @@ def main():
         while True:
             # Step 1: Send Command
             axis = 1
-            position = 423  # Example position
-            message = construct_message(0x01, axis, position)  # Command message
+            position = 423
+            message = construct_message(0x01, axis, position)
             ser.write(message)
             print(f"Sent Command: Axis {axis}, Position {position}")
 
             # Step 2: Wait for Acknowledgment
             ack_received = False
-            ack_timeout = 5  # seconds
+            ack_timeout = 5
             ack_start_time = time.time()
             buffer = bytearray()
 
@@ -85,7 +73,7 @@ def main():
                                 buffer = buffer[5:]
                         except ValueError as e:
                             print(f"Error parsing message: {e}")
-                            buffer = buffer[1:]  # Remove one byte and retry
+                            buffer = buffer[1:]
                 else:
                     time.sleep(0.1)
 
@@ -95,7 +83,7 @@ def main():
 
             # Step 3: Wait for Data Message from Nucleo
             data_received = False
-            data_timeout = 10  # seconds (adjust as needed)
+            data_timeout = 10
             data_start_time = time.time()
             buffer = bytearray()
 
@@ -127,7 +115,7 @@ def main():
                 continue  # Decide how to handle this case
 
             # Step 4: Proceed to send the next command or perform other tasks
-            time.sleep(1)  # Adjust as needed
+            time.sleep(1)
 
     except KeyboardInterrupt:
         print("Program interrupted by user.")
