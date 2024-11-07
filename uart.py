@@ -1,10 +1,8 @@
 import serial
 import time
 
-# Open the serial connection on /dev/serial0
 ser = serial.Serial('/dev/ttyAMA0', baudrate=9600, timeout=1)
 
-# Data to send
 axis = 1
 byte1 = 4
 byte2 = 2
