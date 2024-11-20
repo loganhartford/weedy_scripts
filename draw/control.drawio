@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" version="24.8.4">
   <diagram name="Page-1" id="js-JORSwDeCTtrG_aufr">
-    <mxGraphModel dx="1533" dy="1509" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1839" dy="1692" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -33,7 +33,7 @@
         <mxCell id="SvQYntT_slhw4JaxMj-Q-50" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="SvQYntT_slhw4JaxMj-Q-2" target="SvQYntT_slhw4JaxMj-Q-18" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="SvQYntT_slhw4JaxMj-Q-67" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1">
+        <mxCell id="SvQYntT_slhw4JaxMj-Q-67" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" target="SvQYntT_slhw4JaxMj-Q-66">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="115" y="-35" as="sourcePoint" />
             <mxPoint x="220" y="235" as="targetPoint" />
@@ -159,14 +159,6 @@
         <mxCell id="SvQYntT_slhw4JaxMj-Q-70" value="Motors" style="rhombus;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
           <mxGeometry x="-45" y="220" width="90" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="SvQYntT_slhw4JaxMj-Q-85" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="SvQYntT_slhw4JaxMj-Q-72" target="SvQYntT_slhw4JaxMj-Q-84" edge="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="SvQYntT_slhw4JaxMj-Q-125" value="&quot;state&quot;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="SvQYntT_slhw4JaxMj-Q-85" vertex="1" connectable="0">
-          <mxGeometry x="0.3918" y="-1" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="SvQYntT_slhw4JaxMj-Q-72" value="UART.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
           <mxGeometry x="365" y="215" width="110" height="40" as="geometry" />
         </mxCell>
@@ -216,22 +208,6 @@
         </mxCell>
         <mxCell id="SvQYntT_slhw4JaxMj-Q-82" value="Move" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
           <mxGeometry x="1150" y="170" width="80" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="SvQYntT_slhw4JaxMj-Q-84" value="/cart_state" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
-          <mxGeometry x="230" y="310" width="80" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="SvQYntT_slhw4JaxMj-Q-86" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.385;entryY=1.063;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="SvQYntT_slhw4JaxMj-Q-84" target="SvQYntT_slhw4JaxMj-Q-2" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="230" y="330" />
-              <mxPoint x="116" y="330" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="SvQYntT_slhw4JaxMj-Q-87" value="&quot;state&quot;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="SvQYntT_slhw4JaxMj-Q-86" vertex="1" connectable="0">
-          <mxGeometry x="-0.7578" y="3" relative="1" as="geometry">
-            <mxPoint as="offset" />
-          </mxGeometry>
         </mxCell>
         <mxCell id="SvQYntT_slhw4JaxMj-Q-93" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" parent="1" source="SvQYntT_slhw4JaxMj-Q-88" target="SvQYntT_slhw4JaxMj-Q-90" edge="1">
           <mxGeometry relative="1" as="geometry" />
