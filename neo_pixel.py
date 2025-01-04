@@ -4,6 +4,6 @@ from pi5neo import Pi5Neo
 neo = Pi5Neo('/dev/spidev0.0', 10, 800)
 
 # Fill the strip with a red color
-b = 0.5
+b = 1
 neo.fill_strip(int(255*b), int(255*b), int(255*b))
 neo.update_strip()  # Commit changes to the LEDs
