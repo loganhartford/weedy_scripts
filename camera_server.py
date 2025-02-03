@@ -8,15 +8,17 @@ camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)})
 picam2.configure(camera_config)
 
 # Autofocus, Auto Exposure, and Dynamic ISO Range
+# Modified controls for shooting on the move
 picam2.set_controls({
-    "AfMode": 1,                # Autofocus mode enabled
+    "AfMode": 2,                # Hypothetical continuous autofocus mode (check docs for exact value)
     "AeEnable": True,           # Auto exposure enabled
-    "AeMeteringMode": 1,        # Center-weighted metering for balanced exposure
-    "ExposureTime": 0,          # Set to 0 for auto exposure (let the camera decide)
-    "AnalogueGain": 0,          # Let the camera control ISO dynamically
-    # "AwbEnable": True,          # Auto white balance enabled
-    # "AwbMode": 1,               # Auto white balance mode
+    "AeMeteringMode": 1,        # Try different modes if needed (e.g., 1 for center-weighted)
+    "ExposureTime": 6000,       # Fixed short exposure time in microseconds
+    "AnalogueGain": 4,          # Increase gain to compensate for reduced exposure; adjust as needed
+    # "AwbEnable": True,        # Optionally enable auto white balance if lighting conditions vary
 })
+
+picam2.start()
 
 picam2.start()
 
