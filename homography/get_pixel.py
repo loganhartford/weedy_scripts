@@ -20,6 +20,6 @@ def get_pixel_coordinates(image_path):
 
 # Example usage
 # image_path = "D:\Documents\GitHub\weedy_ros\src\decisions\decisions\img/20250208_115700.jpg"
-image_path = "D:\Documents\GitHub\weedy_scripts\img\homography\homo4.jpg"
+image_path = "D:\Documents\GitHub\weedy_scripts\img/val\img5.jpg"
 selected_points = get_pixel_coordinates(image_path)
 print(f"Selected points: {selected_points}")
